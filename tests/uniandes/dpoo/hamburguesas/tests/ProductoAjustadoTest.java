@@ -29,18 +29,17 @@ public class ProductoAjustadoTest {
         refLista(pa, "eliminados").add(ing);
     }
 
-    // ================= TESTS ENFOCADOS EN AGREGADOS/ELIMINADOS =================
+    //  TESTSSSSs !!
 
     @Test
     void sinAjustes_precioIgualAlBase_yFacturaMuestraSoloBase() {
         ProductoMenu base = new ProductoMenu("Hamburguesa", 12000);
         ProductoAjustado pa = new ProductoAjustado(base);
 
-        // BUG actual: getPrecio() devuelve 0 → este test debe FALLAR hasta que lo corrijas
         assertEquals(12000, pa.getPrecio(), "Sin agregados, el precio debe ser el del producto base");
 
         String factura = pa.generarTextoFactura();
-        // Con la implementación actual usa toString() del base; igual verificamos señales mínimas
+        
         assertTrue(factura.contains("Hamburguesa"), "La factura debe incluir el producto base");
         assertFalse(factura.contains("+"), "No debería listar agregados");
         assertFalse(factura.contains("-"), "No debería listar eliminados");
@@ -58,8 +57,7 @@ public class ProductoAjustadoTest {
         addAgregado(pa, tocineta);
 
         // Esperado = 10000 + 1500 + 2000 = 13500
-        // BUG actual: 0 → este test debe FALLAR hasta que implementes getPrecio()
-        assertEquals(13500, pa.getPrecio());
+        assertEquals(13500, pa.getPrecio(), "El precio debe ser el base + agregados");
     }
 
     @Test
@@ -71,6 +69,7 @@ public class ProductoAjustadoTest {
         addAgregado(pa, queso);
         addAgregado(pa, queso); // mismo ingrediente dos veces
 
+        // Esperado = 9000 + 500 + 500 = 10000
         assertEquals(10000, pa.getPrecio(), "Duplicar agregado debe sumar dos veces su costo");
     }
 
@@ -82,6 +81,7 @@ public class ProductoAjustadoTest {
         Ingrediente cebolla = new Ingrediente("Cebolla", 300);
         addEliminado(pa, cebolla);
 
+      
         assertEquals(9000, pa.getPrecio(), "Quitar ingredientes no cambia el precio");
     }
 
@@ -98,16 +98,15 @@ public class ProductoAjustadoTest {
         addAgregado(pa, pepinillos);
         addEliminado(pa, cebolla);
 
-        int totalEsperado = 8000 + 1000 + 700; // 9700
-
+        // Total esperado = 8000 + 1000 + 700 = 9700
         String factura = pa.generarTextoFactura();
 
-        // Con la implementación actual faltan \n y usa toString(); este test debe FALLAR hasta que arregles formato y precio
+        // Verificamos que los agregados y eliminados se imprimen correctamente en la factura
         assertTrue(factura.contains("+Queso"), "Debe listar agregados con '+'");
         assertTrue(factura.contains("1000"), "Debe mostrar costo del agregado");
         assertTrue(factura.contains("+Pepinillos"), "Debe listar todos los agregados");
         assertTrue(factura.contains("700"), "Debe mostrar costo del otro agregado");
         assertTrue(factura.contains("-Cebolla"), "Debe listar eliminados con '-'");
-        assertTrue(factura.contains(String.valueOf(totalEsperado)), "Debe incluir el total correcto");
+        assertTrue(factura.contains("9700"), "Debe incluir el total correcto");
     }
 }

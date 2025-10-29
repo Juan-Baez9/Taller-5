@@ -1,0 +1,10 @@
+Cliente: andres
+Dirección: calle 7
+----------------
+Combo combo corral
+ Descuento: 0.1
+            22050
+----------------
+Precio Neto:  22050
+IVA:          4189
+Precio Total: 26239

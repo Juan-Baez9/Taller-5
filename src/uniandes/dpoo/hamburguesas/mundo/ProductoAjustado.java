@@ -7,78 +7,85 @@ import java.util.ArrayList;
  */
 public class ProductoAjustado implements Producto
 {
-    /**
-     * El producto base que el cliente sobre el cual el cliente quiere hacer ajustes
-     */
     private ProductoMenu productoBase;
 
-    /**
-     * La lista de ingrediente que el usuario quiere agregar. El mismo ingrediente puede aparecer varias veces.
-     */
+    /** Ingredientes que el usuario quiere agregar  */
     private ArrayList<Ingrediente> agregados;
 
-    /**
-     * La lista de ingrediente que el usuario quiere eliminar.
-     */
+    /** Ingredientes que el usuario quiere eliminar */
     private ArrayList<Ingrediente> eliminados;
 
     /**
      * Construye un nuevo producto ajustado a partir del producto base y sin modificaciones
      * @param productoBase El producto base que se va a ajustar
      */
-    public ProductoAjustado( ProductoMenu productoBase )
+    public ProductoAjustado(ProductoMenu productoBase)
     {
         this.productoBase = productoBase;
-        agregados = new ArrayList<Ingrediente>( );
-        eliminados = new ArrayList<Ingrediente>( );
+        this.agregados = new ArrayList<>();
+        this.eliminados = new ArrayList<>();
     }
 
     @Override
-    public String getNombre( )
+    public String getNombre()
     {
-        return productoBase.getNombre( );
+        return productoBase.getNombre();
     }
 
     /**
-     * Retorna el precio del producto ajustado, que debe ser igual al del producto base, sumándole el precio de los ingredientes adicionales.
+     * Precio = precio del producto base + suma de costos de ingredientes agregados.
+     * (Eliminar ingredientes NO cambia el precio).
      */
     @Override
     public int getPrecio()
     {
-        int precio_base = productoBase.getPrecio();
-        int total = 0;
-
+        int total = productoBase.getPrecio();
         for (Ingrediente ing : agregados) {
             total += ing.getCostoAdicional();
         }
-
-        return precio_base + total;
+        return total;
     }
 
-  
+    /** Registra un ingrediente agregado por el cliente. */
+    public void agregarIngrediente(Ingrediente ingrediente)
+    {
+        agregados.add(ingrediente);
+    }
+
+    /** Registra un ingrediente eliminado por el cliente. */
+    public void eliminarIngrediente(Ingrediente ingrediente)
+    {
+        eliminados.add(ingrediente);
+    }
+
     /**
-     * Genera el texto que debe aparecer en la factura.
-     * 
-     * El texto incluye el producto base, los ingredientes adicionales con su costo, los ingredientes eliminados, y el precio total
+     * Genera el texto que debe aparecer en la factura:
+     * - Factura del producto base
+     * - Ingredientes agregados con su costo
+     * - Ingredientes eliminados
+     * - Total del producto ajustado
      */
     @Override
-    public String generarTextoFactura( )
+    public String generarTextoFactura()
     {
-        StringBuffer sb = new StringBuffer( );
-        sb.append( productoBase );
-        for( Ingrediente ing : agregados )
-        {
-            sb.append( "    +" + ing.getNombre( ) );
-            sb.append( "                " + ing.getCostoAdicional( ) );
-        }
-        for( Ingrediente ing : eliminados )
-        {
-            sb.append( "    -" + ing.getNombre( ) );
+        StringBuffer sb = new StringBuffer();
+
+        sb.append(productoBase.generarTextoFactura());
+
+        // 2) agregados
+        for (Ingrediente ing : agregados) {
+            sb.append("    +").append(ing.getNombre()).append("\n");
+            sb.append("                ").append(ing.getCostoAdicional()).append("\n");
         }
 
-        sb.append( "            " + getPrecio( ) + "\n" );
+        // 3) eliminados
+        for (Ingrediente ing : eliminados) {
+            sb.append("    -").append(ing.getNombre()).append("\n");
+        }
 
-        return sb.toString( );
+        // 4) total del ajustado
+        sb.append("            ").append(getPrecio()).append("\n");
+
+        return sb.toString();
     }
-
 }

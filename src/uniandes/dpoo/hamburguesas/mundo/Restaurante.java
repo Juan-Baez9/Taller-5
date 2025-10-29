@@ -96,14 +96,23 @@ public class Restaurante
      * @throws NoHayPedidoEnCursoException Lanza esta excepción si no hay un pedido en curso
      * @throws FileNotFoundException Lanza esta excepción si hay problemas guardando el archivo
      */
-    public void cerrarYGuardarPedido( ) throws NoHayPedidoEnCursoException, IOException
-    {
-        if( pedidoEnCurso == null )
-            throw new NoHayPedidoEnCursoException( );
+    public void cerrarYGuardarPedido() throws NoHayPedidoEnCursoException, IOException {
+        if (pedidoEnCurso == null) throw new NoHayPedidoEnCursoException();
 
-        String nombreArchivo = PREFIJO_FACTURAS + pedidoEnCurso.getIdPedido( ) + ".txt";
-        pedidoEnCurso.guardarFactura( new File( CARPETA_FACTURAS + nombreArchivo ) );
+        File carpeta = new File(CARPETA_FACTURAS);                 
+        if (!carpeta.exists() && !carpeta.mkdirs()) {
+            throw new IOException("No fue posible crear la carpeta: " + carpeta.getAbsolutePath());
+        }
+
+        String nombre = PREFIJO_FACTURAS + pedidoEnCurso.getIdPedido() + ".txt";
+        File destino = new File(carpeta, nombre);
+        pedidoEnCurso.guardarFactura(destino);
+
+        pedidos.add(pedidoEnCurso);
         pedidoEnCurso = null;
+
+        // para ver donde esta lol
+        System.out.println("Factura en: " + destino.getAbsolutePath());
     }
 
     /**
@@ -124,6 +133,23 @@ public class Restaurante
     public ArrayList<Pedido> getPedidos( )
     {
         return pedidos;
+    }
+    /**
+     * Busca un pedido previamente cerrado por su identificador.
+     *
+     * @param idPedido Identificador a buscar.
+     * @return El pedido correspondiente o {@code null} si no existe.
+     */
+    public Pedido buscarPedidoPorId( int idPedido )
+    {
+        for( Pedido pedido : pedidos )
+        {
+            if( pedido.getIdPedido( ) == idPedido )
+            {
+                return pedido;
+            }
+        }
+        return null;
     }
 
     /**

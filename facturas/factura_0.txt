@@ -1,0 +1,11 @@
+Cliente: juan
+Dirección: calle 34
+----------------
+wrap de lomo
+            22000
+gaseosa
+            5000
+----------------
+Precio Neto:  27000
+IVA:          5130
+Precio Total: 32130

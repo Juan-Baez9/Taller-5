@@ -1,3 +1,4 @@
+
 package uniandes.dpoo.hamburguesas.tests;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,7 +23,6 @@ import uniandes.dpoo.hamburguesas.mundo.Producto;
  */
 public class PedidoTest {
 
-    // ======= Stub mínimo de Producto =======
     private static class ProductoStub implements Producto {
         private final String nombre;
         private final int precio;
@@ -47,7 +47,6 @@ public class PedidoTest {
         	return factura; }
     }
 
-    // ======= Util: resetear contador estático para IDs predecibles =======
     @BeforeEach
     void resetNumeroPedidos() throws Exception {
         Field f = Pedido.class.getDeclaredField("numeroPedidos");
@@ -55,13 +54,13 @@ public class PedidoTest {
         f.setInt(null, 0);
     }
 
-    // ======= Helpers =======
+    // Helpers
     private Producto p(String nombre, int precio) {
         // Formato libre porque Pedido solo concatena lo que devuelva el producto
         String factura = nombre + " .... " + precio + "\n";
         return new ProductoStub(nombre, precio, factura);
     }
-    // ======= Tests =======
+    // Tests 
 
     @Test
     void getid_y_guardaCliente() {
